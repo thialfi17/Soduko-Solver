@@ -31,13 +31,13 @@ int main()
 		for(int i = 0; i < BOARD_SIZE; i++)
 		{
 			load_group(BLOCK, i, current_numbers, board, current_p_values, p_values);
-			mask_sum += scan_group(c_numbers, current_p_values);
+			mask_sum += scan_group(current_numbers, current_p_values);
 			
 			load_group(ROW, i, current_numbers, board, current_p_values, p_values);
-			mask_sum += scan_group(c_numbers, current_p_values);
+			mask_sum += scan_group(current_numbers, current_p_values);
 			
 			load_group(COLUMN, i, current_numbers, board, current_p_values, p_values);
-			mask_sum += scan_group(c_numbers, current_p_values);
+			mask_sum += scan_group(current_numbers, current_p_values);
 		}
 		if(mask_sum == prev_mask_sum)
 		{
