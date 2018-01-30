@@ -1,16 +1,16 @@
 #include <iostream>
 using namespace std;
 
-const int BOARD_SIZE;
-void read_board(int& board[BOARD_SIZE]);
+const int BOARD_SIZE = 9;
+void read_board(int& board[BOARD_SIZE*BOARD_SIZE]);
 
 int main() 
 {
-  int board[BOARD_SIZE];
+  int board[BOARD_SIZE*BOARD_SIZE];
   read_board(board); 
 }
 
-void read_board(int& board[BOARD_SIZE])
+void read_board(int& board[BOARD_SIZE*BOARD_SIZE])
 {
   FILE * f = fopen("puzzle.txt", "r");
   
