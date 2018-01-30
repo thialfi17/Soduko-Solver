@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <math.h>
 #include "main.h"
@@ -6,15 +7,15 @@ using namespace std;
 
 int main()
 {
-	int board[BOARD_SIZE * BOARD_SIZE];  //Board.
+	int board[BOARD_SIZE * BOARD_SIZE] = {};  //Board.
 	int * current_numbers[BOARD_SIZE];   //The current values of the numbers stored in the group we are looking at.
-	int p_values[BOARD_SIZE*BOARD_SIZE]; //Possible values for the cells on the board.
+	int p_values[BOARD_SIZE*BOARD_SIZE] = {}; //Possible values for the cells on the board.
 	int * current_p_values[BOARD_SIZE];
 	int mask_sum = 0, prev_mask_sum = 0;
 
-	for (int i = 0; i < BOARD_SIZE*BOARD_SIZE; i++) {
-		p_values[i] = 0;
-	}
+	// for (int i = 0; i < BOARD_SIZE*BOARD_SIZE; i++) {
+	// p_values[i] = 0;
+	// }
 
 	read_board(board);
 
@@ -28,20 +29,28 @@ int main()
 	load_group(COLUMN, 2, current_numbers, board, current_p_values, p_values);
 	*current_numbers[2] = 3;*/
 
+	int cnt = 0;
 	while (mask_sum < 3 * (pow(2, BOARD_SIZE) - 1) * BOARD_SIZE)
 	{
+		cnt++;
 		prev_mask_sum = mask_sum;
 		mask_sum = 0;
 		for (int i = 0; i < BOARD_SIZE; i++)
 		{
 			load_group(BLOCK, i, current_numbers, board, current_p_values, p_values);
 			mask_sum += scan_group(current_numbers, current_p_values);
+			if (cnt > 0)
+			 get_group_freq(current_numbers, current_p_values);
 
 			load_group(ROW, i, current_numbers, board, current_p_values, p_values);
 			mask_sum += scan_group(current_numbers, current_p_values);
+			if (cnt > 0)
+			 get_group_freq(current_numbers, current_p_values);
 
 			load_group(COLUMN, i, current_numbers, board, current_p_values, p_values);
 			mask_sum += scan_group(current_numbers, current_p_values);
+			if (cnt > 0)
+			 get_group_freq(current_numbers, current_p_values);
 		}
 
 		insert_values(board, p_values);
@@ -49,12 +58,14 @@ int main()
 		if (mask_sum == prev_mask_sum)
 		{
 			cout << "Puzzle unsolvable!" << endl;
+			cout << "Looped " << cnt << " times!" << endl;
 			print_board(board);
 			return 0;
 		}
 	}
 
 	cout << "Puzzle solved! :)" << endl;
+	cout << "Looped " << cnt << " times!" << endl;
 	print_board(board);
 }
 
@@ -144,14 +155,48 @@ void insert_values(int(&board)[BOARD_SIZE*BOARD_SIZE], int(&p_val)[BOARD_SIZE*BO
 {
 	for (int i = 0; i < BOARD_SIZE*BOARD_SIZE; i++)
 	{
-		for (int j = 0; j < BOARD_SIZE; j++) {
+		if (board[i] == 0) { // Only run if number needs to be filled
+			for (int j = 0; j < BOARD_SIZE; j++) {
 
-			int temp = ~p_val[i] & MASK;
+				int temp = ~p_val[i] & MASK;
 
-			if (temp == pow(2, j)) {
-				board[i] = j + 1;
+				if (temp == pow(2, j)) {
+					board[i] = j + 1;
+					p_val[i] = MASK;
+				}
 			}
 		}
 	}
 }
 
+void get_group_freq(int* c_num[BOARD_SIZE], int* c_p_val[BOARD_SIZE]) {
+	int frequencies[BOARD_SIZE] = {}; // Initialize to zeros
+	bool changed = 0;
+
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		if (*c_num[i] == 0) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				int temp = ~(*c_p_val[i]) & MASK;
+				if (temp & (int)pow(2, j)) {
+					frequencies[j]++;
+					changed = 1;
+				}
+			}
+		}
+	}
+
+	if (!changed) return;
+
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		if (frequencies[i] == 1) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				if (*c_num[j] != 0) continue;
+				int temp = ~(*c_p_val[j]) & MASK;
+				if (temp & (int)pow(2, i)) {
+					*c_num[j] = i + 1;
+					*c_p_val[j] = MASK;
+				}
+			}
+		}
+	}
+}
