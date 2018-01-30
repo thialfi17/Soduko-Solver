@@ -11,18 +11,42 @@ int main()
 	int * current_numbers[BOARD_SIZE];   //The current values of the numbers stored in the group we are looking at.
 	int p_values[BOARD_SIZE*BOARD_SIZE]; //Possible values for the cells on the board.
 	int * current_p_values[BOARD_SIZE];
+	int mask_sum, prev_mask_sum = 0;
 	
 	read_board(board); 
 	
 	print_board(board);
 	
-	load_group(BLOCK, 8, current_numbers, board, current_p_values, p_values);
+	/*load_group(BLOCK, 8, current_numbers, board, current_p_values, p_values);
+	mask_sum += scan_group(c_numbers, current_p_values);
 	*current_numbers[2] = 8;
 	load_group(ROW, 3, current_numbers, board, current_p_values, p_values);
 	*current_numbers[2] = 3;
 	load_group(COLUMN, 2, current_numbers, board, current_p_values, p_values);
-	*current_numbers[2] = 3;
+	*current_numbers[2] = 3;*/
 	
+	while(mask_sum < 3 * (pow(2, BOARD_SIZE+1) - 1) * BOARD_SIZE)
+	{	
+		prev_mask_sum = mask_sum
+		for(int i = 0; i < BOARD_SIZE; i++)
+		{
+			load_group(BLOCK, i, current_numbers, board, current_p_values, p_values);
+			mask_sum += scan_group(c_numbers, current_p_values);
+			
+			load_group(ROW, i, current_numbers, board, current_p_values, p_values);
+			mask_sum += scan_group(c_numbers, current_p_values);
+			
+			load_group(COLUMN, i, current_numbers, board, current_p_values, p_values);
+			mask_sum += scan_group(c_numbers, current_p_values);
+		}
+		if(mask_sum == prev_mask_sum)
+		{
+			cout << "Puzzle unsolvable!" << endl;
+			break;	
+		}
+	}
+	
+	cout << "Puzzle solved! :)" << endl;
 	print_board(board);
 }
 
