@@ -25,9 +25,9 @@ int main()
 	
 	print_board(board);
 	
-	load_group(BLOCK, 2, current_numbers, board, current_p_values, p_values);
-	*current_numbers[2] = 3;
-	load_group(ROW, 2, current_numbers, board, current_p_values, p_values);
+	load_group(BLOCK, 8, current_numbers, board, current_p_values, p_values);
+	*current_numbers[2] = 8;
+	load_group(ROW, 3, current_numbers, board, current_p_values, p_values);
 	*current_numbers[2] = 3;
 	load_group(COLUMN, 2, current_numbers, board, current_p_values, p_values);
 	*current_numbers[2] = 3;
@@ -66,7 +66,8 @@ void load_group(GroupType t, int group, int* c_num[BOARD_SIZE], int (&board)[BOA
 			c_num[i] = &board[group + i * BOARD_SIZE];
 		}
 		else if (t == BLOCK) {
-			c_num[i] = &board[group * BLOCK_SIZE + (i / BLOCK_SIZE * BOARD_SIZE + i % BLOCK_SIZE)];
+			c_num[i] = &board[(group % BLOCK_SIZE) * BLOCK_SIZE + ((group/BLOCK_SIZE) * BLOCK_SIZE * BOARD_SIZE) 
+									+ (i / BLOCK_SIZE * BOARD_SIZE + i % BLOCK_SIZE)];
 		}
 	}
 }
