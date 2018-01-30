@@ -62,16 +62,16 @@ void read_board(int (&board)[BOARD_SIZE*BOARD_SIZE])
 }
 
 void print_board(int (&board)[BOARD_SIZE*BOARD_SIZE]) {
-		for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
-			std::cout << board[i];
+	for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
+		std::cout << board[i];
 
-			if ((i + 1) % BLOCK_SIZE == 0)
-				std::cout << " ";
-			if ((i + 1) % BOARD_SIZE == 0) {
+		if ((i + 1) % BLOCK_SIZE == 0)
+			std::cout << " ";
+		if ((i + 1) % BOARD_SIZE == 0) {
+			std::cout << std::endl;
+			if ((i + 1) % (BOARD_SIZE * BLOCK_SIZE) == 0) {
 				std::cout << std::endl;
-				if ((i + 1) % (BOARD_SIZE * BLOCK_SIZE) == 0) {
-					std::cout << std::endl;
-				}
 			}
 		}
 	}
+}
