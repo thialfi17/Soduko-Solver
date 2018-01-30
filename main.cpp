@@ -1,18 +1,9 @@
 
 #include <iostream>
 #include <math.h>
+#include "main.h"
+
 using namespace std;
-
-typedef enum { ROW, COLUMN, BLOCK } GroupType;
-
-const int BOARD_SIZE = 9;
-const int BLOCK_SIZE = sqrt(BOARD_SIZE);
-
-void read_board(int (&board)[BOARD_SIZE*BOARD_SIZE]);
-void load_group(GroupType t, int group, int* c_num[BOARD_SIZE], int (&board)[BOARD_SIZE*BOARD_SIZE],
-										int* c_p_val[BOARD_SIZE], int (&c_val)[BOARD_SIZE*BOARD_SIZE]);
-int scan_group(int* c_num[BOARD_SIZE], int* c_p_val);
-void print_board(int (&board)[BOARD_SIZE*BOARD_SIZE]);
 
 int main() 
 {
@@ -20,36 +11,64 @@ int main()
 	int * current_numbers[BOARD_SIZE];   //The current values of the numbers stored in the group we are looking at.
 	int p_values[BOARD_SIZE*BOARD_SIZE]; //Possible values for the cells on the board.
 	int * current_p_values[BOARD_SIZE];
+	int mask_sum, prev_mask_sum = 0;
 	
 	read_board(board); 
 	
 	print_board(board);
 	
-	load_group(BLOCK, 8, current_numbers, board, current_p_values, p_values);
+	/*load_group(BLOCK, 8, current_numbers, board, current_p_values, p_values);
+	mask_sum += scan_group(c_numbers, current_p_values);
 	*current_numbers[2] = 8;
 	load_group(ROW, 3, current_numbers, board, current_p_values, p_values);
 	*current_numbers[2] = 3;
 	load_group(COLUMN, 2, current_numbers, board, current_p_values, p_values);
-	*current_numbers[2] = 3;
+	*current_numbers[2] = 3;*/
 	
+	while(mask_sum < 3 * (pow(2, BOARD_SIZE+1) - 1) * BOARD_SIZE)
+	{	
+		prev_mask_sum = mask_sum
+		for(int i = 0; i < BOARD_SIZE; i++)
+		{
+			load_group(BLOCK, i, current_numbers, board, current_p_values, p_values);
+			mask_sum += scan_group(c_numbers, current_p_values);
+			
+			load_group(ROW, i, current_numbers, board, current_p_values, p_values);
+			mask_sum += scan_group(c_numbers, current_p_values);
+			
+			load_group(COLUMN, i, current_numbers, board, current_p_values, p_values);
+			mask_sum += scan_group(c_numbers, current_p_values);
+		}
+		if(mask_sum == prev_mask_sum)
+		{
+			cout << "Puzzle unsolvable!" << endl;
+			break;	
+		}
+	}
+	
+	cout << "Puzzle solved! :)" << endl;
 	print_board(board);
 }
 
 int scan_group(int* c_num[BOARD_SIZE], int* c_p_val[BOARD_SIZE]) {
 	int temp_mask = 0;
 	//Find the numbers missing in the group
-	for(int i = 0; i < GROUP_SIZE; i++)	//Finding missing numbers, updating possibilities mask.
+	for(int i = 0; i < BOARD_SIZE; i++)	//Finding missing numbers, updating possibilities mask.
 	{					//Using mask, if value is 0, that number is possible.
-		if(c_num == 0) {
+		if(*c_num == 0) {
 			continue;
 		}
-		temp_mask |= 1<<(c_num[i]-1);
+		int bit = 1<<( *c_num[i]-1);
+		if (temp_mask &= bit) {
+			cout << "The number: " << *c_num[i] << " has occurred before in this group!";
+		}
+		temp_mask |= bit;
 	}
-	for(int i = 0; i < GROUP_SIZE; i++)
+	for(int i = 0; i < BOARD_SIZE; i++)
 	{
-		if(c_num == 0)
+		if(*c_num == 0)
 		{
-			c_p_val[i] |= temp_mask;
+			*c_p_val[i] |= temp_mask;
 		}
 	}
 	
@@ -66,8 +85,10 @@ void load_group(GroupType t, int group, int* c_num[BOARD_SIZE], int (&board)[BOA
 			c_num[i] = &board[group + i * BOARD_SIZE];
 		}
 		else if (t == BLOCK) {
-			c_num[i] = &board[(group % BLOCK_SIZE) * BLOCK_SIZE + ((group/BLOCK_SIZE) * BLOCK_SIZE * BOARD_SIZE) 
-									+ (i / BLOCK_SIZE * BOARD_SIZE + i % BLOCK_SIZE)];
+			c_num[i] = &board[ (group % BLOCK_SIZE) * BLOCK_SIZE + 				// Calculates the initial horizontal position of the group
+							   ((group/BLOCK_SIZE) * BLOCK_SIZE * BOARD_SIZE) +  // Calculates the initial vertical position of the group
+							   (i / BLOCK_SIZE * BOARD_SIZE) + 					// Calculates the vertical position within the group
+							   (i % BLOCK_SIZE)];								// Calculates the horizontal position within the group
 		}
 	}
 }
