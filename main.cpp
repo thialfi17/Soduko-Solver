@@ -66,7 +66,7 @@ int scan_group(int* c_num[BOARD_SIZE], int* c_p_val[BOARD_SIZE]) {
 		}
 		int bit = 1<<( *c_num[i]-1);
 		
-		if ((temp_mask & bit) == bit) {
+		if (temp_mask & bit) {
 			 cout << "The number: " << *c_num[i] << " has occurred before in this group!" << endl;
 		}
 		temp_mask |= bit;
