@@ -1,18 +1,9 @@
 
 #include <iostream>
 #include <math.h>
+#include "main.h"
+
 using namespace std;
-
-typedef enum { ROW, COLUMN, BLOCK } GroupType;
-
-const int BOARD_SIZE = 9;
-const int BLOCK_SIZE = sqrt(BOARD_SIZE);
-
-void read_board(int (&board)[BOARD_SIZE*BOARD_SIZE]);
-void load_group(GroupType t, int group, int* c_num[BOARD_SIZE], int (&board)[BOARD_SIZE*BOARD_SIZE],
-										int* c_p_val[BOARD_SIZE], int (&c_val)[BOARD_SIZE*BOARD_SIZE]);
-int scan_group(int* c_num[BOARD_SIZE], int* c_p_val);
-void print_board(int (&board)[BOARD_SIZE*BOARD_SIZE]);
 
 int main() 
 {
@@ -67,7 +58,11 @@ int scan_group(int* c_num[BOARD_SIZE], int* c_p_val[BOARD_SIZE]) {
 		if(*c_num == 0) {
 			continue;
 		}
-		temp_mask |= 1<<( *c_num[i]-1);
+		int bit = 1<<( *c_num[i]-1);
+		if (temp_mask &= bit) {
+			cout << "The number: " << *c_num[i] << " has occurred before in this group!";
+		}
+		temp_mask |= bit;
 	}
 	for(int i = 0; i < BOARD_SIZE; i++)
 	{
