@@ -8,6 +8,7 @@ void read_board(int (&board)[BOARD_SIZE*BOARD_SIZE]);
 int main() 
 {
   int board[BOARD_SIZE * BOARD_SIZE];
+
   read_board(board); 
   
   cout << board[0] << board[10] << board[80] << endl;
