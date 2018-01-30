@@ -62,18 +62,18 @@ int main()
 int scan_group(int* c_num[BOARD_SIZE], int* c_p_val[BOARD_SIZE]) {
 	int temp_mask = 0;
 	//Find the numbers missing in the group
-	for(int i = 0; i < GROUP_SIZE; i++)	//Finding missing numbers, updating possibilities mask.
+	for(int i = 0; i < BOARD_SIZE; i++)	//Finding missing numbers, updating possibilities mask.
 	{					//Using mask, if value is 0, that number is possible.
-		if(c_num == 0) {
+		if(*c_num == 0) {
 			continue;
 		}
-		temp_mask |= 1<<(c_num[i]-1);
+		temp_mask |= 1<<( *c_num[i]-1);
 	}
-	for(int i = 0; i < GROUP_SIZE; i++)
+	for(int i = 0; i < BOARD_SIZE; i++)
 	{
-		if(c_num == 0)
+		if(*c_num == 0)
 		{
-			c_p_val[i] |= temp_mask;
+			*c_p_val[i] |= temp_mask;
 		}
 	}
 	
@@ -90,8 +90,10 @@ void load_group(GroupType t, int group, int* c_num[BOARD_SIZE], int (&board)[BOA
 			c_num[i] = &board[group + i * BOARD_SIZE];
 		}
 		else if (t == BLOCK) {
-			c_num[i] = &board[(group % BLOCK_SIZE) * BLOCK_SIZE + ((group/BLOCK_SIZE) * BLOCK_SIZE * BOARD_SIZE) 
-									+ (i / BLOCK_SIZE * BOARD_SIZE + i % BLOCK_SIZE)];
+			c_num[i] = &board[ (group % BLOCK_SIZE) * BLOCK_SIZE + 				// Calculates the initial horizontal position of the group
+							   ((group/BLOCK_SIZE) * BLOCK_SIZE * BOARD_SIZE) +  // Calculates the initial vertical position of the group
+							   (i / BLOCK_SIZE * BOARD_SIZE) + 					// Calculates the vertical position within the group
+							   (i % BLOCK_SIZE)];								// Calculates the horizontal position within the group
 		}
 	}
 }
