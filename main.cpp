@@ -45,11 +45,12 @@ int main()
 			mask_sum += scan_group(current_numbers, current_p_values);
 		}
 		
-		insert_values(board, p_val);
+		insert_values(board, p_values);
 		
 		if(mask_sum == prev_mask_sum)
 		{
 			cout << "Puzzle unsolvable!" << endl;
+			print_board(board);
 			return 0;	
 		}
 	}
@@ -140,7 +141,7 @@ void print_board(int (&board)[BOARD_SIZE*BOARD_SIZE]) {
 	}
 }
 
-void insert_values(int (&board)([BOARD_SIZE*BOARD_SIZE], int (&p_val)[BOARD_SIZE*BOARD_SIZE])
+void insert_values(int (&board)[BOARD_SIZE*BOARD_SIZE], int (&p_val)[BOARD_SIZE*BOARD_SIZE])
 {
 	for(int i = 0; i < BOARD_SIZE*BOARD_SIZE; i++)
 	{
